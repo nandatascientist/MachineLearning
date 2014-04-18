@@ -47,24 +47,29 @@ X = [ones(m, 1) X]; % now X is the conventionl design matrix of dimensions: m x 
 %                 initial_theta, options);
 %
 
+% Note : the fminc function substitutes, the initial_theta value inside 
+% its body for the @t parameter. 
+
 for k=1:K
 
-  temptheta = zeros(n+1,1);
+  % Placeholder for the n+1x1 parameter vector for each of the K classifiers
+  temptheta = zeros(n+1,1); 
   
+  %  setting options object per example above
   options = optimset('GradObj', 'on', 'MaxIter', 50);
+  
+  %since y is a vector that has values 1:10 (k=10) to represent each of the 10 classes,
+  % y==k, will help segment the training set to oneVsAll for all k from 1 to K.
+  %we can pass initial_theta as a vector of zeroes.
+  
   [temptheta] = fmincg(@(t)(lrCostFunction(t, X, (y == k), lambda)),zeros(n+1,1),options);
+  
+  % temptheta will be a n+1x1 vector. We need to transpose prior to assigning it as the Kth 
+  % classifier in the all_theta parameter matrix
+  
   all_theta(k,:) = temptheta';
 
 end
-
-
-
-
-
-
-
-
-
 
 % =========================================================================
 
